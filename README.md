@@ -171,7 +171,7 @@ Criar um assistente financeiro conversacional que permita registrar gastos, rece
 ## Interações com o Lovable
 
 - Crie um App de Finanças Pessoais com base no seguinte PRD (Documento de Requisitos de Produto) Blueprint – MVP Assistente Financeiro Conversacional (Lovable): {PRD}
-- o app não está registrando as entradas de dinheiro, porém nesse momento não havia mais crédito para interagir com o sistema.
+- o app não está registrando as entradas de dinheiro, porém nesse momento não havia mais crédito para interagir com a plataforma.
 
 ## Interações com o Copilot Web
 
@@ -188,19 +188,137 @@ Link para o projeto [Acesse o Site](index.html)
 
 <img width="1366" height="631" alt="{1ED33C65-7758-4083-8DA7-9CC4D2A01A98}" src="https://github.com/user-attachments/assets/0d86df28-4f9f-46f9-9ab1-909a94f4d70c" />
 
+<img width="2130" height="997" alt="image" src="https://github.com/user-attachments/assets/e031da8c-d783-4f70-84ad-ecbdb7620c8b" />
+
+<img width="2128" height="997" alt="image" src="https://github.com/user-attachments/assets/d8316345-efde-4d48-bf4a-9929a1269cb7" />
+
+## Funcionalidades do Assistente Financeiro Conversacional
+
+O Assistente Financeiro Conversacional é um aplicativo projetado para simplificar a organização financeira por meio de uma experiência natural, acessível e inteligente. Ele combina chat em linguagem natural, análise automática de dados e um dashboard visual para ajudar o usuário a entender, controlar e melhorar sua vida financeira.
+
+### 1. Chat Inteligente em Linguagem Natural
+- Registro de gastos, receitas e dívidas por meio de conversas.
+- Interpretação automática de valores, categorias e contexto.
+- Respostas claras, educativas e acolhedoras.
+- Sugestões proativas com base no comportamento do usuário.
+
+### 2. Registro Automático de Transações
+O app identifica automaticamente o tipo de transação:
+
+#### Gastos
+- Mercado
+- Delivery
+- Transporte
+- Lazer
+- Saúde
+- Moradia
+- Educação
+- Outros
+
+#### Receitas
+- Salário
+- Renda extra
+- Reembolsos
+- Comissões
+- Depósitos
+- Outras receitas
+
+#### Dívidas
+- Cartão de crédito
+- Empréstimos
+- Cheque especial
+- Contas atrasadas
+- Outras dívidas
+
+Cada registro é categorizado automaticamente e integrado ao dashboard.
+
+### 3. Metas Financeiras Inteligentes
+O usuário pode criar metas de três tipos:
+
+#### Metas de Economia
+Guardar um valor específico ao longo do tempo.
+
+#### Metas de Redução de Gastos
+Definir limites por categoria (por exemplo, reduzir gastos com Delivery).
+
+#### Metas de Pagamento de Dívidas
+Acompanhar a quitação de dívidas específicas (por exemplo, cartão de crédito).
+
+O app calcula o progresso automaticamente com base nas transações reais.
+
+### 4. Dashboard Visual e Interativo
+- Resumo de receitas, gastos, dívidas e saldo estimado.
+- Gráfico de distribuição de gastos por categoria.
+- Lista de metas com progresso atualizado.
+- Alertas visuais de risco, atenção e oportunidade.
+
+Tudo atualizado em tempo real conforme o usuário conversa com o assistente.
+
+### 5. Alertas Inteligentes
+O app identifica padrões e situações importantes, gerando alertas:
+
+#### Alertas de Risco
+- Saldo negativo
+- Meta estourada
+- Dívida aumentando
+
+#### Alertas de Atenção
+- Categoria atingindo 80% do limite
+- Gastos acima da média
+
+#### Alertas de Oportunidade
+- Receita recebida
+- Dívida reduzida
+- Economia acumulada
+
+### 6. Alertas Semanais Automáticos
+O app compara a semana atual com a anterior e identifica tendências:
+
+- Aumento ou redução de gastos por categoria
+- Novas categorias de gasto surgindo
+- Mudanças significativas no comportamento financeiro
+
+Esses alertas aparecem no chat e no dashboard.
+
+### 7. Avaliação de Saúde Financeira Geral
+O sistema analisa:
+- Saldo
+- Dívidas
+- Gastos
+- Metas
+
+E classifica a saúde financeira como:
+- Boa
+- Moderada
+- Ruim
+
+Com recomendações práticas para melhorar.
+
+### 8. Ações Rápidas
+Botões que facilitam o uso:
+- Registrar gasto
+- Registrar receita
+- Registrar dívida
+- Criar meta
+
+### 9. Interface Responsiva e Acessível
+- Layout mobile-first
+- Tipografia legível
+- Alto contraste
+- Navegação simples
+- Compatível com leitores de tela
+- Baixa carga cognitiva
+
+Pensado para todos os perfis de usuários.
+
+## O que funcionou bem?
+O refinamento do PRD feito no Copilot ajudou muito, pois os créditos no Lovable acabaram com 3 interações. Dessa forma, decidi continuar o projeto no próprio Copilot. E o interessante é que a própria IA continua trazendo sugestões para o desenvolvimento do App, então continuei a interação, produzindo novas funcionalidades para o App.
+
+## O que não funcionou como esperado?
+Esperava poder interagir mais com o Lovable, mas a experiência já trouxe o conhecimento da plataforma e ajudou a aumentar o conhecimento sobre Vibe Coding.
+
+## O que aprendeu sobre conversar com IAs?
+Aprendi que podemos falar como se estivéssemos conversando com outra pessoa e que quanto mais detalhes incluímos no prompt melhor o resultado.
 
 
-- Seu **prompt final** (PRD);  
-- Prints ou pequenos vídeos das interações com a IA;  
-- Um resumo do que o seu **App de Finanças Pessoais** faz;  
-- Uma breve **reflexão sobre o processo**:
-  - O que funcionou bem?  
-  - O que não funcionou como o esperado?  
-  - O que aprendeu sobre conversar com IAs?
 
-> [!TIP]
-> Publique seu repositório e compartilhe o link na plataforma da DIO! Sua entrega é a prova de que você domina o raciocínio de Vibe Coding, mesmo sem escrever uma única linha de código.
-
-## 💬 Conclusão
-
-Vibe Coding é sobre clareza, curiosidade e criatividade, não sobre perfeição técnica. O verdadeiro objetivo aqui é aprender a pensar junto com a IA, transformando ideias em conceitos reais e enxergando a tecnologia como uma extensão do seu raciocínio criativo. Cada interação é um experimento, quanto mais clara for sua intenção, mais surpreendente será o resultado.
