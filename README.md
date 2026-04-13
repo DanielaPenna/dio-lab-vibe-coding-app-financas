@@ -185,7 +185,11 @@ Criar um assistente financeiro conversacional que permita registrar gastos, rece
 - Gerar um arquivo index.html completo e atualizado, com tudo integrado.
 
 Link para o projeto [Acesse o Site](index.html)
-  
+
+<img width="1366" height="631" alt="{1ED33C65-7758-4083-8DA7-9CC4D2A01A98}" src="https://github.com/user-attachments/assets/0d86df28-4f9f-46f9-9ab1-909a94f4d70c" />
+
+
+
 - Seu **prompt final** (PRD);  
 - Prints ou pequenos vídeos das interações com a IA;  
 - Um resumo do que o seu **App de Finanças Pessoais** faz;  
