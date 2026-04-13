@@ -1,0 +1,973 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Assistente Financeiro Conversacional</title>
+
+  <style>
+    :root {
+      --primary: #2d6cdf;
+      --primary-dark: #1f4ea8;
+      --bg: #f4f4f4;
+      --card: #ffffff;
+      --text: #222222;
+      --muted: #777777;
+      --danger: #d9534f;
+      --success: #28a745;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    header {
+      background: var(--primary);
+      color: #fff;
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    header h1 {
+      font-size: 18px;
+      margin: 0;
+    }
+
+    header span {
+      font-size: 12px;
+      opacity: 0.9;
+    }
+
+    .app {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 12px;
+      display: grid;
+      grid-template-columns: 1.4fr 1fr;
+      gap: 12px;
+    }
+
+    @media (max-width: 768px) {
+      .app {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .card {
+      background: var(--card);
+      border-radius: 10px;
+      padding: 12px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    }
+
+    .card h2 {
+      font-size: 16px;
+      margin: 0 0 8px;
+    }
+
+    .card h3 {
+      font-size: 14px;
+      margin: 12px 0 6px;
+    }
+
+    /* DASHBOARD */
+
+    .summary {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .summary-item {
+      flex: 1;
+      min-width: 120px;
+      background: #f7f9ff;
+      border-radius: 8px;
+      padding: 8px;
+    }
+
+    .summary-label {
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    .summary-value {
+      font-size: 16px;
+      font-weight: 600;
+      margin-top: 4px;
+    }
+
+    .summary-value.positive {
+      color: var(--success);
+    }
+
+    .summary-value.negative {
+      color: var(--danger);
+    }
+
+    .chart {
+      margin-top: 12px;
+    }
+
+    .chart-bar {
+      display: flex;
+      align-items: center;
+      margin-bottom: 4px;
+      font-size: 12px;
+    }
+
+    .chart-label {
+      width: 80px;
+      color: var(--muted);
+    }
+
+    .chart-track {
+      flex: 1;
+      background: #eef1ff;
+      border-radius: 999px;
+      overflow: hidden;
+      height: 10px;
+    }
+
+    .chart-fill {
+      height: 100%;
+      background: var(--primary);
+      width: 0%;
+      transition: width 0.3s ease;
+    }
+
+    /* ALERTAS VISUAIS */
+
+    .alert-container {
+      margin-bottom: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .alert {
+      padding: 10px 12px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 500;
+      color: #fff;
+    }
+
+    .alert-risk {
+      background: #d9534f;
+    }
+
+    .alert-warning {
+      background: #f0ad4e;
+    }
+
+    .alert-opportunity {
+      background: #28a745;
+    }
+
+    /* AÇÕES RÁPIDAS */
+
+    .quick-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    .quick-actions button {
+      flex: 1;
+      min-width: 120px;
+      border-radius: 999px;
+      border: none;
+      padding: 8px 10px;
+      font-size: 13px;
+      cursor: pointer;
+      background: #eef1ff;
+      color: var(--primary-dark);
+    }
+
+    .quick-actions button:hover {
+      background: #dde4ff;
+    }
+
+    /* CHAT */
+
+    #chat-container {
+      height: 55vh;
+      max-height: 420px;
+      overflow-y: auto;
+      padding-right: 4px;
+      margin-top: 8px;
+    }
+
+    .msg {
+      margin-bottom: 10px;
+      padding: 8px 10px;
+      border-radius: 10px;
+      max-width: 80%;
+      font-size: 14px;
+      line-height: 1.4;
+    }
+
+    .user {
+      background: #d9e7ff;
+      margin-left: auto;
+      border-bottom-right-radius: 2px;
+    }
+
+    .bot {
+      background: #f0f0f0;
+      margin-right: auto;
+      border-bottom-left-radius: 2px;
+    }
+
+    #input-area {
+      display: flex;
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    #userInput {
+      flex: 1;
+      padding: 10px;
+      border-radius: 999px;
+      border: 1px solid #ccc;
+      font-size: 14px;
+    }
+
+    #sendBtn {
+      padding: 10px 16px;
+      border-radius: 999px;
+      border: none;
+      background: var(--primary);
+      color: #fff;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    #sendBtn:hover {
+      background: var(--primary-dark);
+    }
+
+    /* METAS */
+
+    .goal-form {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-bottom: 10px;
+      margin-top: 8px;
+    }
+
+    .goal-form input,
+    .goal-form select {
+      padding: 8px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      font-size: 13px;
+    }
+
+    .goal-form button {
+      align-self: flex-start;
+      padding: 8px 14px;
+      border-radius: 999px;
+      border: none;
+      background: var(--primary);
+      color: #fff;
+      font-size: 13px;
+      cursor: pointer;
+    }
+
+    .goal-form button:hover {
+      background: var(--primary-dark);
+    }
+
+    .goal-list {
+      max-height: 180px;
+      overflow-y: auto;
+      font-size: 13px;
+    }
+
+    .goal-item {
+      padding: 6px 8px;
+      border-radius: 6px;
+      background: #f7f9ff;
+      margin-bottom: 6px;
+    }
+
+    .goal-item span {
+      display: block;
+    }
+
+    .goal-progress {
+      margin-top: 4px;
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    /* MOBILE AJUSTES */
+
+    @media (max-width: 480px) {
+      header h1 {
+        font-size: 16px;
+      }
+      .card {
+        padding: 10px;
+      }
+      #chat-container {
+        height: 50vh;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div>
+      <h1>Assistente Financeiro</h1>
+      <span>Conversacional, inclusivo e focado em metas</span>
+    </div>
+  </header>
+
+  <main class="app">
+    <!-- COLUNA ESQUERDA: CHAT -->
+    <section class="card">
+      <h2>Chat</h2>
+      <div class="quick-actions">
+        <button onclick="quickAction('gasto')">Registrar gasto</button>
+        <button onclick="quickAction('receita')">Registrar receita</button>
+        <button onclick="quickAction('divida')">Registrar dívida</button>
+        <button onclick="quickAction('meta')">Criar meta</button>
+      </div>
+
+      <div id="chat-container"></div>
+
+      <div id="input-area">
+        <input
+          id="userInput"
+          type="text"
+          placeholder="Digite algo como: 'gastei 40 no mercado' ou 'recebi meu salário de 3000'..."
+        />
+        <button id="sendBtn" onclick="sendMessage()">Enviar</button>
+      </div>
+    </section>
+
+    <!-- COLUNA DIREITA: DASHBOARD + METAS -->
+    <section class="card">
+      <h2>Dashboard</h2>
+
+      <div id="alertContainer" class="alert-container"></div>
+
+      <div class="summary">
+        <div class="summary-item">
+          <div class="summary-label">Receitas</div>
+          <div id="sumReceitas" class="summary-value positive">R$ 0,00</div>
+        </div>
+        <div class="summary-item">
+          <div class="summary-label">Gastos</div>
+          <div id="sumGastos" class="summary-value negative">R$ 0,00</div>
+        </div>
+        <div class="summary-item">
+          <div class="summary-label">Dívidas</div>
+          <div id="sumDividas" class="summary-value negative">R$ 0,00</div>
+        </div>
+        <div class="summary-item">
+          <div class="summary-label">Saldo estimado</div>
+          <div id="saldo" class="summary-value">R$ 0,00</div>
+        </div>
+      </div>
+
+      <h3>Distribuição de gastos</h3>
+      <div id="chartGastos" class="chart"></div>
+
+      <h3>Metas</h3>
+      <div class="goal-form">
+        <input id="goalName" type="text" placeholder="Nome da meta (ex.: Quitar cartão)" />
+        <input id="goalTarget" type="number" placeholder="Valor alvo (ex.: 1000)" />
+        <select id="goalType">
+          <option value="divida">Pagamento de dívida</option>
+          <option value="economia">Economia</option>
+          <option value="gasto">Redução de gastos por categoria</option>
+        </select>
+        <button onclick="createGoal()">Criar meta</button>
+      </div>
+
+      <div class="goal-list" id="goalList"></div>
+    </section>
+  </main>
+
+  <script>
+    const chat = document.getElementById("chat-container");
+
+    const state = {
+      transacoes: [], // { tipo: 'gasto'|'receita'|'divida', valor, categoria, data }
+      metas: []       // { nome, tipo, alvo, categoria, valorInicialDivida, progresso }
+    };
+
+    function addMessage(text, sender) {
+      const div = document.createElement("div");
+      div.classList.add("msg", sender);
+      div.textContent = text;
+      chat.appendChild(div);
+      chat.scrollTop = chat.scrollHeight;
+    }
+
+    function parseValor(text) {
+      const match = text.replace(",", ".").match(/(\d+(\.\d+)?)/);
+      if (!match) return null;
+      return parseFloat(match[1]);
+    }
+
+    function classifyMessage(text) {
+      const lower = text.toLowerCase();
+
+      const receitaKeywords = ["recebi", "ganhei", "entrou", "caiu", "salário", "salario", "renda extra", "reembolso", "depósito", "deposito"];
+      const dividaKeywords = ["devendo", "dívida", "divida", "parcelar", "atrasado", "atrasada", "cartão", "cartao", "empréstimo", "emprestimo", "cheque especial"];
+      const gastoKeywords = ["gastei", "paguei", "custou", "comprei"];
+
+      if (receitaKeywords.some(k => lower.includes(k))) return "receita";
+      if (dividaKeywords.some(k => lower.includes(k))) return "divida";
+      if (gastoKeywords.some(k => lower.includes(k))) return "gasto";
+
+      return "outro";
+    }
+
+    function extractCategoria(text, tipo) {
+      const lower = text.toLowerCase();
+      if (tipo === "gasto") {
+        if (lower.includes("mercado")) return "Mercado";
+        if (lower.includes("delivery") || lower.includes("ifood")) return "Delivery";
+        if (lower.includes("uber") || lower.includes("transporte") || lower.includes("ônibus") || lower.includes("onibus")) return "Transporte";
+        if (lower.includes("aluguel") || lower.includes("aluguel")) return "Moradia";
+        if (lower.includes("lazer") || lower.includes("cinema") || lower.includes("bar")) return "Lazer";
+        if (lower.includes("saúde") || lower.includes("saude") || lower.includes("farmácia") || lower.includes("farmacia")) return "Saúde";
+        if (lower.includes("faculdade") || lower.includes("curso") || lower.includes("escola")) return "Educação";
+        return "Outros";
+      }
+      if (tipo === "receita") {
+        if (lower.includes("salário") || lower.includes("salario")) return "Salário";
+        if (lower.includes("freela") || lower.includes("renda extra")) return "Renda extra";
+        if (lower.includes("reembolso")) return "Reembolso";
+        if (lower.includes("comissão") || lower.includes("comissao")) return "Comissões";
+        return "Outras receitas";
+      }
+      if (tipo === "divida") {
+        if (lower.includes("cartão") || lower.includes("cartao")) return "Cartão de crédito";
+        if (lower.includes("empréstimo") || lower.includes("emprestimo")) return "Empréstimo";
+        if (lower.includes("cheque especial")) return "Cheque especial";
+        if (lower.includes("conta") || lower.includes("atrasada") || lower.includes("atrasado")) return "Contas atrasadas";
+        return "Outras dívidas";
+      }
+      return "Outros";
+    }
+
+    function registrarTransacao(text) {
+      const tipo = classifyMessage(text);
+      const valor = parseValor(text);
+      if (!valor || tipo === "outro") return null;
+
+      const categoria = extractCategoria(text, tipo);
+      const transacao = { tipo, valor, categoria, data: new Date().toISOString() };
+      state.transacoes.push(transacao);
+
+      atualizarDashboard();
+      verificarAlertas();
+
+      return transacao;
+    }
+
+    function atualizarDashboard() {
+      const sumReceitas = state.transacoes
+        .filter(t => t.tipo === "receita")
+        .reduce((acc, t) => acc + t.valor, 0);
+
+      const sumGastos = state.transacoes
+        .filter(t => t.tipo === "gasto")
+        .reduce((acc, t) => acc + t.valor, 0);
+
+      const sumDividas = state.transacoes
+        .filter(t => t.tipo === "divida")
+        .reduce((acc, t) => acc + t.valor, 0);
+
+      const saldo = sumReceitas - sumGastos - sumDividas;
+
+      document.getElementById("sumReceitas").textContent = formatCurrency(sumReceitas);
+      document.getElementById("sumGastos").textContent = formatCurrency(sumGastos);
+      document.getElementById("sumDividas").textContent = formatCurrency(sumDividas);
+      document.getElementById("saldo").textContent = formatCurrency(saldo);
+
+      atualizarGraficoGastos();
+      atualizarMetasProgresso();
+      atualizarAlertasVisuais();
+      gerarAlertasSemanais();
+      avaliarSaudeFinanceira();
+    }
+
+    function formatCurrency(value) {
+      return "R$ " + value.toFixed(2).replace(".", ",");
+    }
+
+    function atualizarGraficoGastos() {
+      const container = document.getElementById("chartGastos");
+      container.innerHTML = "";
+
+      const gastos = state.transacoes.filter(t => t.tipo === "gasto");
+      if (gastos.length === 0) {
+        container.textContent = "Ainda não há gastos registrados.";
+        return;
+      }
+
+      const porCategoria = {};
+      gastos.forEach(t => {
+        porCategoria[t.categoria] = (porCategoria[t.categoria] || 0) + t.valor;
+      });
+
+      const max = Math.max(...Object.values(porCategoria));
+
+      Object.entries(porCategoria).forEach(([categoria, valor]) => {
+        const bar = document.createElement("div");
+        bar.className = "chart-bar";
+
+        const label = document.createElement("div");
+        label.className = "chart-label";
+        label.textContent = categoria;
+
+        const track = document.createElement("div");
+        track.className = "chart-track";
+
+        const fill = document.createElement("div");
+        fill.className = "chart-fill";
+        fill.style.width = (valor / max * 100).toFixed(0) + "%";
+
+        track.appendChild(fill);
+        bar.appendChild(label);
+        bar.appendChild(track);
+        container.appendChild(bar);
+      });
+    }
+
+    function createGoal() {
+      const nome = document.getElementById("goalName").value.trim();
+      const alvo = parseFloat(document.getElementById("goalTarget").value);
+      const tipo = document.getElementById("goalType").value;
+
+      if (!nome || !alvo || alvo <= 0) {
+        alert("Preencha nome e valor alvo da meta.");
+        return;
+      }
+
+      let categoria = null;
+
+      if (tipo === "gasto") {
+        categoria = prompt("Para qual categoria de gasto é essa meta? (ex.: Mercado, Delivery, Lazer)");
+      }
+
+      let valorInicialDivida = null;
+      if (tipo === "divida") {
+        valorInicialDivida = state.transacoes
+          .filter(t => t.tipo === "divida")
+          .reduce((acc, t) => acc + t.valor, 0);
+      }
+
+      const meta = {
+        nome,
+        tipo,
+        alvo,
+        categoria,
+        valorInicialDivida,
+        progresso: 0
+      };
+
+      state.metas.push(meta);
+
+      document.getElementById("goalName").value = "";
+      document.getElementById("goalTarget").value = "";
+
+      renderGoals();
+      atualizarMetasProgresso();
+      atualizarAlertasVisuais();
+    }
+
+    function atualizarMetasProgresso() {
+      const totalReceitas = state.transacoes
+        .filter(t => t.tipo === "receita")
+        .reduce((acc, t) => acc + t.valor, 0);
+
+      const totalGastos = state.transacoes
+        .filter(t => t.tipo === "gasto")
+        .reduce((acc, t) => acc + t.valor, 0);
+
+      const totalDividas = state.transacoes
+        .filter(t => t.tipo === "divida")
+        .reduce((acc, t) => acc + t.valor, 0);
+
+      state.metas.forEach(meta => {
+        if (meta.tipo === "economia") {
+          const saldo = totalReceitas - totalGastos - totalDividas;
+          meta.progresso = Math.min(100, (saldo / meta.alvo) * 100);
+        }
+
+        if (meta.tipo === "gasto") {
+          const gastoCategoria = state.transacoes
+            .filter(t => t.tipo === "gasto" && t.categoria === meta.categoria)
+            .reduce((acc, t) => acc + t.valor, 0);
+
+          meta.progresso = Math.max(0, (1 - gastoCategoria / meta.alvo) * 100);
+        }
+
+        if (meta.tipo === "divida") {
+          const dividaAtual = state.transacoes
+            .filter(t => t.tipo === "divida")
+            .reduce((acc, t) => acc + t.valor, 0);
+
+          const pago = meta.valorInicialDivida - dividaAtual;
+          meta.progresso = Math.min(100, (pago / meta.valorInicialDivida) * 100);
+        }
+      });
+
+      renderGoals();
+    }
+
+    function renderGoals() {
+      const list = document.getElementById("goalList");
+      list.innerHTML = "";
+
+      if (state.metas.length === 0) {
+        list.textContent = "Nenhuma meta criada ainda.";
+        return;
+      }
+
+      state.metas.forEach(meta => {
+        const item = document.createElement("div");
+        item.className = "goal-item";
+
+        const nome = document.createElement("span");
+        nome.textContent = meta.nome + " (" + meta.tipo + ")";
+
+        const alvo = document.createElement("span");
+        alvo.textContent = "Alvo: " + formatCurrency(meta.alvo);
+
+        const categoria = document.createElement("span");
+        if (meta.categoria) categoria.textContent = "Categoria: " + meta.categoria;
+
+        const prog = document.createElement("div");
+        prog.className = "goal-progress";
+        const p = isNaN(meta.progresso) ? 0 : Math.max(0, Math.min(100, meta.progresso));
+        prog.textContent = "Progresso: " + p.toFixed(0) + "%";
+
+        item.appendChild(nome);
+        item.appendChild(alvo);
+        if (meta.categoria) item.appendChild(categoria);
+        item.appendChild(prog);
+
+        list.appendChild(item);
+      });
+    }
+
+    function atualizarAlertasVisuais() {
+      const container = document.getElementById("alertContainer");
+      container.innerHTML = "";
+
+      const totalReceitas = state.transacoes
+        .filter(t => t.tipo === "receita")
+        .reduce((acc, t) => acc + t.valor, 0);
+
+      const totalGastos = state.transacoes
+        .filter(t => t.tipo === "gasto")
+        .reduce((acc, t) => acc + t.valor, 0);
+
+      const totalDividas = state.transacoes
+        .filter(t => t.tipo === "divida")
+        .reduce((acc, t) => acc + t.valor, 0);
+
+      const saldo = totalReceitas - totalGastos - totalDividas;
+
+      if (saldo < 0) {
+        criarAlerta("Seu saldo está negativo. É importante revisar seus gastos e metas.", "risk");
+      }
+
+      const ultimaTransacao = state.transacoes[state.transacoes.length - 1];
+      if (ultimaTransacao && ultimaTransacao.tipo === "receita") {
+        criarAlerta("Você recebeu uma receita. Ótimo momento para antecipar metas.", "opportunity");
+      }
+
+      state.metas.forEach(meta => {
+        if (meta.tipo === "gasto") {
+          const gastoCategoria = state.transacoes
+            .filter(t => t.tipo === "gasto" && t.categoria === meta.categoria)
+            .reduce((acc, t) => acc + t.valor, 0);
+
+          if (gastoCategoria >= meta.alvo * 0.8 && gastoCategoria < meta.alvo) {
+            criarAlerta(`Você já atingiu 80% da meta de ${meta.categoria}.`, "warning");
+          }
+
+          if (gastoCategoria > meta.alvo) {
+            criarAlerta(`Você ultrapassou sua meta de ${meta.categoria}.`, "risk");
+          }
+        }
+
+        if (meta.tipo === "divida") {
+          const dividaAtual = state.transacoes
+            .filter(t => t.tipo === "divida")
+            .reduce((acc, t) => acc + t.valor, 0);
+
+          if (dividaAtual > meta.valorInicialDivida) {
+            criarAlerta("Sua dívida aumentou. Avalie renegociar ou ajustar metas.", "risk");
+          }
+
+          if (dividaAtual < meta.valorInicialDivida * 0.5) {
+            criarAlerta("Você já reduziu mais de 50% da sua dívida. Excelente oportunidade para antecipar o restante.", "opportunity");
+          }
+        }
+
+        if (meta.tipo === "economia") {
+          if (saldo >= meta.alvo * 0.8 && saldo < meta.alvo) {
+            criarAlerta("Você está perto de atingir sua meta de economia.", "opportunity");
+          }
+
+          if (saldo >= meta.alvo) {
+            criarAlerta("Você atingiu sua meta de economia. Parabéns!", "opportunity");
+          }
+        }
+      });
+    }
+
+    function criarAlerta(texto, tipo) {
+      const container = document.getElementById("alertContainer");
+      const div = document.createElement("div");
+      div.classList.add("alert");
+
+      if (tipo === "risk") div.classList.add("alert-risk");
+      if (tipo === "warning") div.classList.add("alert-warning");
+      if (tipo === "opportunity") div.classList.add("alert-opportunity");
+
+      div.textContent = texto;
+      container.appendChild(div);
+    }
+
+    function verificarAlertas() {
+      const totalReceitas = state.transacoes
+        .filter(t => t.tipo === "receita")
+        .reduce((acc, t) => acc + t.valor, 0);
+
+      const totalGastos = state.transacoes
+        .filter(t => t.tipo === "gasto")
+        .reduce((acc, t) => acc + t.valor, 0);
+
+      const totalDividas = state.transacoes
+        .filter(t => t.tipo === "divida")
+        .reduce((acc, t) => acc + t.valor, 0);
+
+      const saldo = totalReceitas - totalGastos - totalDividas;
+
+      if (saldo < 0) {
+        addMessage("Seu saldo está negativo. Posso te ajudar a reorganizar suas metas.", "bot");
+      }
+
+      state.metas.forEach(meta => {
+        if (meta.tipo === "gasto") {
+          const gastoCategoria = state.transacoes
+            .filter(t => t.tipo === "gasto" && t.categoria === meta.categoria)
+            .reduce((acc, t) => acc + t.valor, 0);
+
+          if (gastoCategoria >= meta.alvo * 0.8 && gastoCategoria < meta.alvo) {
+            addMessage(`Você já gastou 80% da sua meta de ${meta.categoria}.`, "bot");
+          }
+
+          if (gastoCategoria > meta.alvo) {
+            addMessage(`Você ultrapassou sua meta de ${meta.categoria}. Quer ajustar o limite?`, "bot");
+          }
+        }
+
+        if (meta.tipo === "divida") {
+          const dividaAtual = state.transacoes
+            .filter(t => t.tipo === "divida")
+            .reduce((acc, t) => acc + t.valor, 0);
+
+          if (dividaAtual > meta.valorInicialDivida) {
+            addMessage("Sua dívida aumentou. Quer que eu te ajude a criar um plano de pagamento?", "bot");
+          }
+        }
+
+        if (meta.tipo === "economia") {
+          if (saldo >= meta.alvo * 0.8 && saldo < meta.alvo) {
+            addMessage("Você está perto de atingir sua meta de economia. Excelente progresso.", "bot");
+          }
+
+          if (saldo >= meta.alvo) {
+            addMessage("Você atingiu sua meta de economia. Parabéns! Quer criar uma nova meta?", "bot");
+          }
+        }
+      });
+    }
+
+    function separarPorSemana() {
+      const agora = new Date();
+      const umaSemana = 7 * 24 * 60 * 60 * 1000;
+
+      const semanaAtual = [];
+      const semanaAnterior = [];
+
+      state.transacoes.forEach(t => {
+        const data = t.data ? new Date(t.data) : new Date();
+        const diff = agora - data;
+
+        if (diff <= umaSemana) {
+          semanaAtual.push(t);
+        } else if (diff <= umaSemana * 2) {
+          semanaAnterior.push(t);
+        }
+      });
+
+      return { semanaAtual, semanaAnterior };
+    }
+
+    function gerarAlertasSemanais() {
+      const { semanaAtual, semanaAnterior } = separarPorSemana();
+
+      if (semanaAtual.length === 0 || semanaAnterior.length === 0) return;
+
+      function acumular(transacoes) {
+        const mapa = {};
+        transacoes.forEach(t => {
+          if (t.tipo === "gasto") {
+            mapa[t.categoria] = (mapa[t.categoria] || 0) + t.valor;
+          }
+        });
+        return mapa;
+      }
+
+      const atual = acumular(semanaAtual);
+      const anterior = acumular(semanaAnterior);
+
+      Object.keys(atual).forEach(cat => {
+        const valorAtual = atual[cat];
+        const valorAnterior = anterior[cat] || 0;
+
+        if (valorAnterior === 0 && valorAtual > 0) {
+          addMessage(`Você começou a gastar em ${cat} esta semana.`, "bot");
+          criarAlerta(`Novo gasto detectado em ${cat}.`, "warning");
+          return;
+        }
+
+        if (valorAnterior === 0) return;
+
+        const variacao = ((valorAtual - valorAnterior) / valorAnterior) * 100;
+
+        if (variacao > 20) {
+          addMessage(`Seus gastos com ${cat} aumentaram ${variacao.toFixed(0)}% em relação à semana passada.`, "bot");
+          criarAlerta(`Gastos com ${cat} subiram ${variacao.toFixed(0)}%.`, "risk");
+        }
+
+        if (variacao < -20) {
+          addMessage(`Você reduziu seus gastos com ${cat} em ${Math.abs(variacao).toFixed(0)}% esta semana.`, "bot");
+          criarAlerta(`Boa economia em ${cat}: redução de ${Math.abs(variacao).toFixed(0)}%.`, "opportunity");
+        }
+      });
+    }
+
+    function avaliarSaudeFinanceira() {
+      const totalReceitas = state.transacoes
+        .filter(t => t.tipo === "receita")
+        .reduce((acc, t) => acc + t.valor, 0);
+
+      const totalGastos = state.transacoes
+        .filter(t => t.tipo === "gasto")
+        .reduce((acc, t) => acc + t.valor, 0);
+
+      const totalDividas = state.transacoes
+        .filter(t => t.tipo === "divida")
+        .reduce((acc, t) => acc + t.valor, 0);
+
+      const saldo = totalReceitas - totalGastos - totalDividas;
+
+      let status = "boa";
+
+      if (saldo < 0 || totalDividas > totalReceitas * 0.5) {
+        status = "ruim";
+      } else if (saldo < totalReceitas * 0.1) {
+        status = "moderada";
+      }
+
+      if (status === "boa") {
+        criarAlerta("Sua saúde financeira está boa.", "opportunity");
+      }
+
+      if (status === "moderada") {
+        criarAlerta("Sua saúde financeira está estável, mas pode melhorar.", "warning");
+      }
+
+      if (status === "ruim") {
+        criarAlerta("Sua saúde financeira precisa de atenção.", "risk");
+        addMessage("Sua saúde financeira está comprometida. Posso te ajudar a reorganizar metas e dívidas.", "bot");
+      }
+    }
+
+    function botResponse(text) {
+      const tipo = classifyMessage(text);
+      const transacao = registrarTransacao(text);
+
+      if (tipo === "receita") {
+        return "Entendi. Registrei essa entrada. Você quer usar parte dessa receita para alguma meta ou para acelerar o pagamento de dívidas?";
+      }
+
+      if (tipo === "gasto") {
+        return "Certo. Registrei esse gasto. Você quer criar ou ajustar uma meta para controlar essa categoria?";
+      }
+
+      if (tipo === "divida") {
+        return "Ok. Registrei essa dívida. Posso te ajudar a criar um plano leve e realista para pagar isso.";
+      }
+
+      if (text.toLowerCase().includes("meta")) {
+        return "Você pode me dizer o nome da meta e o valor alvo, ou usar o formulário de metas ao lado.";
+      }
+
+      return "Entendi. Posso te ajudar a registrar gastos, receitas, dívidas ou criar metas.";
+    }
+
+    function sendMessage() {
+      const input = document.getElementById("userInput");
+      const text = input.value.trim();
+      if (!text) return;
+
+      addMessage(text, "user");
+
+      setTimeout(() => {
+        const reply = botResponse(text);
+        addMessage(reply, "bot");
+      }, 300);
+
+      input.value = "";
+    }
+
+    function quickAction(type) {
+      const input = document.getElementById("userInput");
+      if (type === "gasto") {
+        input.value = "Gastei 50 no mercado";
+      } else if (type === "receita") {
+        input.value = "Recebi meu salário de 3000";
+      } else if (type === "divida") {
+        input.value = "Estou devendo 800 no cartão";
+      } else if (type === "meta") {
+        input.value = "Quero criar uma meta para quitar minha dívida";
+      }
+      input.focus();
+    }
+
+    addMessage("Olá, eu sou seu assistente financeiro. Você pode me contar sobre seus gastos, receitas, dívidas ou metas.", "bot");
+
+    document.getElementById("userInput").addEventListener("keydown", e => {
+      if (e.key === "Enter") sendMessage();
+    });
+  </script>
+</body>
+</html>
